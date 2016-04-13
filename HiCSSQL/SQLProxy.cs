@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Data.OracleClient;
 using MySql.Data.MySqlClient;
@@ -111,6 +112,10 @@ namespace HiCSSQL
             if (type == "mysql")
             {
                 return new MySqlParameter(key, val);
+            }
+            if (type == "oledb")
+            {
+                return new OleDbParameter(key, val);
             }
             OnCreateParamHandler handler = null;
             if (handlers.TryGetValue(type, out handler))

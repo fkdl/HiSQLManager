@@ -12,6 +12,7 @@ namespace HiCSSQL
     {
         private const string SQL_SERVER = "sqlserver";
         private const string ORACLE = "oracle";
+        private const string OLEDB = "oledb";
         private const string OTHER = "other";
 
         /// <summary>
