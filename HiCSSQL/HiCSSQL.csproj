@@ -44,11 +44,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="data\ParamerCls.cs" />
-    <Compile Include="data\SQLData.cs" />
-    <Compile Include="data\SqlInfo.cs" />
-    <Compile Include="SQLMng.cs" />
-    <Compile Include="SQLProxy.cs" />
+    <Compile Include="Cache\CachProxy.cs" />
+    <Compile Include="Cache\CachData.cs" />
+    <Compile Include="Cache\ICachItem.cs" />
+    <Compile Include="SQL\ParamerCls.cs" />
+    <Compile Include="SQL\SQLData.cs" />
+    <Compile Include="SQL\SqlInfo.cs" />
+    <Compile Include="Cache\CachMng.cs" />
+    <Compile Include="SQL\SQLProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="test\UnitTestCBO.cs" />
     <Compile Include="tool\HiLog.cs" />

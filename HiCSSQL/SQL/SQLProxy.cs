@@ -9,12 +9,15 @@ using MySql.Data.MySqlClient;
 
 namespace HiCSSQL
 {
-    public class SQLProxy
+    /// <summary>
+    /// SQL访问代理
+    /// </summary>
+    public sealed class SQLProxy
     {
-        public delegate DbParameter OnCreateParamHandler(string key, object value);
+        public delegate DbParameter OnCreateParamHandler();
         public delegate void OnLOG(string script);
         static Dictionary<string, OnCreateParamHandler> handlers = new Dictionary<string, OnCreateParamHandler>();
-        static SQLMng mng = new SQLMng();
+        static CachMng<SQLData> mng = new CachMng<SQLData>();
 
         /// <summary>
         /// 加载存储SQL XML文件的文件夹。
@@ -53,14 +56,14 @@ namespace HiCSSQL
         /// <returns></returns>
         public static SqlInfo GetSqlInfo(string key, OnGetObjectHandler handler = null)
         {
-            SQLData data = null;
+            CachData<SQLData> data = null;
             if (!mng.SQLDct.TryGetValue(key, out data))
             {
                 return null;
             }
 
-            SqlInfo info = new SqlInfo(data.SQL);
-            if (data.paramDict.Count < 1)
+            SqlInfo info = new SqlInfo(data.Data.SQL);
+            if (data.Data.paramDict.Count < 1)
             {
                 return info;
             }
@@ -69,10 +72,10 @@ namespace HiCSSQL
             {
                 throw new Exception(string.Format("sql where id({0}) need paramers,but not set OnGetObjectHandler object", key));
             }
-            
-            info.Parameters = new DbParameter[data.paramDict.Count];
+
+            info.Parameters = new DbParameter[data.Data.paramDict.Count];
             int index = 0;
-            foreach (var it in data.paramDict)
+            foreach (var it in data.Data.paramDict)
             {
                 object val = null;
                 if (!handler(it.Value.ParamerText, ref val))
@@ -84,7 +87,7 @@ namespace HiCSSQL
                 {
                     val = DBNull.Value;
                 }
-                info.Parameters[index] = CreateParamer(data.SqlType, it.Value.ParamerName, val);
+                info.Parameters[index] = CreateParamer(data.Data.SqlType, it.Value.ParamerName, val, it.Value.IsOutParamer);
                 if (it.Value.IsOutParamer)
                 {
                     info.Parameters[index].Direction = ParameterDirection.InputOutput;
@@ -95,37 +98,51 @@ namespace HiCSSQL
             return info;
         }
 
-        private static DbParameter CreateParamer(string type, string key, object val)
+        private static DbParameter CreateParamer(string type, string key, object val, bool isOut)
         {
+            DbParameter param = null;
             if (type == "")
             {
-                return new SqlParameter(key, val);
+                param = new SqlParameter();
             }
             if (type == "sqlserver")
             {
-                return new SqlParameter(key, val);
+                param = new SqlParameter();
             }
             if (type == "oracle")
             {
-                return new OracleParameter(key, val);
+                param = new OracleParameter();
             }
             if (type == "mysql")
             {
-                return new MySqlParameter(key, val);
+                param = new MySqlParameter();
             }
             if (type == "oledb")
             {
-                return new OleDbParameter(key, val);
+                param = new OleDbParameter();
             }
             OnCreateParamHandler handler = null;
             if (handlers.TryGetValue(type, out handler))
             {
-                return handler(key, val);
+                param = handler();
             }
             else
             {
                 throw new Exception(string.Format("database type({0}) not support", type));
             }
+
+            param.ParameterName = key;
+
+            if (!isOut)
+            {
+                param.Value = val;
+            }
+            if (isOut)
+            {
+                param.Direction = ParameterDirection.Output;
+            }
+
+            return param;
         }
 
         public static void SetLog(OnLOG evt)

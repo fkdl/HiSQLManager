@@ -8,7 +8,7 @@ namespace HiCSSQL
         /// SQL配置文件中，某个SQL ID对应的类。本类中存储着某个SQL ID对应对象的结构。
         /// 包括SQL语句，数据库类型，参数信息等。
         /// </summary>
-    internal class SQLData
+    internal class SQLData: ICachItem
     {
         private const string SQL_SERVER = "sqlserver";
         private const string ORACLE = "oracle";
@@ -20,17 +20,24 @@ namespace HiCSSQL
         /// </summary>
         public Dictionary<string, ParamerCls> paramDict = new Dictionary<string, ParamerCls>();
 
+        public SQLData()
+        {
+        }
+
         public SQLData(XmlNode node)
+        {
+            Parse(node);
+        }
+
+        public bool Parse(XmlNode node)
         {
             // 如果是注释
             if (XmlNodeType.Comment == node.NodeType)
             {
-                return;
+                return false;
             }
 
             XmlAttributeCollection ndAtt = node.Attributes;
-
-            this.id = ndAtt["id"].Value;
             if (ndAtt["type"] != null && ndAtt["type"].Value != null)
             {
                 this.sqlType = ndAtt["type"].Value.ToLower();
@@ -41,7 +48,7 @@ namespace HiCSSQL
             {
                 if (child.Name.ToUpper() == "TEXT")
                 {
-                    this.sql = child.InnerText.Replace("\r\n", "").Replace("\t", " ").Replace("  ", " ").Trim();
+                    this.SQL = child.InnerText.Replace("\r\n", "").Replace("\t", " ").Replace("  ", " ").Trim();
                     continue;
                 }
 
@@ -57,40 +64,16 @@ namespace HiCSSQL
                     }
                 }
             }
+
+            return true;
         }
-
-        /// <summary>
-        /// SQL语句的ID。
-        /// </summary>
-        private string id;
-
-        /// <summary>
-        /// SQL语句
-        /// </summary>
-        private string sql;
 
         /// <summary>
         /// 数据库类型
         /// </summary>
         private string sqlType;
 
-        public string File { get; set; }
-
-        public string ID
-        {
-            get
-            {
-                return this.id;
-            }
-        }
-
-        public string SQL
-        {
-            get
-            {
-                return this.sql;
-            }
-        }
+        public string SQL { private set; get; }
 
         /// <summary>
         /// 数据库类型。

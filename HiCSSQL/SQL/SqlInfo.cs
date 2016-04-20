@@ -12,7 +12,7 @@ namespace HiCSSQL
 	/// <summary>
 	/// 存储SQL语句信息（包括SQL语句和相关的参数数组）的类。
 	/// </summary>
-	public class SqlInfo
+	public sealed class SqlInfo
 	{
 		/// <summary>
 		/// 构造函数。
