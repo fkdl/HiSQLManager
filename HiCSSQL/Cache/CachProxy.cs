@@ -25,13 +25,7 @@ namespace HiCSSQL
         /// <returns></returns>
         public T GetValue(string key)
         {
-            CachData<T> data = null;
-            if (!mng.SQLDct.TryGetValue(key, out data))
-            {
-                return null;
-            }
-
-            return data.Data;
+            return mng.GetValue(key);
         }
 
         CachMng<T> mng = new CachMng<T>();

@@ -21,14 +21,14 @@ namespace HiCSSQL
         /// <summary>
         /// 最后更新时间。
         /// </summary>
-        private DateTime lastUpdateTime;
+        private DateTime lastUpdateTime = DateTime.Now.AddYears(-1);
 
         /// <summary>
         /// 存储SQL对象的集合。
         /// </summary>
         private Dictionary<string, CachData<T>> sqlDct = new Dictionary<string, CachData<T>>();
         string folder = "";
-
+        private List<string> files = new List<string>();
         public void LoadXMLsByFolder(string path)
         {
             this.folder = path;
@@ -38,12 +38,12 @@ namespace HiCSSQL
                 throw new Exception(string.Format("\"{0}\" folder is not exist,please check you xml folder.", path));
             }
             ReadXMLFiles(path);
-            lastUpdateTime = Directory.GetLastWriteTime(path);
+            lastUpdateTime = GetLastTime();
         }
 
         private bool IsFolderChanged(string path)
         {
-            DateTime dt = Directory.GetLastWriteTime(path);
+            DateTime dt = GetLastTime();
             if (dt <= lastUpdateTime)
             {
                 return false;
@@ -55,25 +55,46 @@ namespace HiCSSQL
             }
         }
 
+        private DateTime GetLastTime()
+        {
+            string[] files = Directory.GetFiles(folder);
+
+            DateTime dt = lastUpdateTime;
+            foreach (string it in files)
+            {
+                DateTime t = File.GetLastWriteTime(it);
+                if (t > dt)
+                {
+                    dt = t;
+                }
+            }
+            return dt;
+        }
+
         private void ReadXMLFiles(string path)
         {
+            files.Clear();
             sqlDct.Clear();
-            string[] files = Directory.GetFiles(path);
-            int index = 0;
-            foreach (string it in files)
+            string[] fls = Directory.GetFiles(path);
+            foreach (string it in fls)
             {
                 if (!it.ToLower().EndsWith(".xml"))
                 {
                     continue;
                 }
-                index++;
-                ReadXMLFile(it, sqlDct);
+
+                files.Add(it);
             }
 
-            if (index < 1)
+            if (files.Count < 1)
             {
                 HiLog.Write("folder ({0}) not include xml files", path);
                 throw new Exception(string.Format("folder ({0}) not include xml files", path));
+            }
+
+            foreach(string it in files)
+            {
+                ReadXMLFile(it, sqlDct);
             }
         }
 
@@ -132,9 +153,25 @@ namespace HiCSSQL
         }
 
         /// <summary>
+        /// 取得存储的值
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public T  GetValue(string id)
+        {
+            CachData<T> data = null;
+            if (!SQLDct.TryGetValue(id, out data))
+            {
+                return default(T);
+            }
+
+            return data.Data;
+        }
+
+        /// <summary>
         /// 存储SQL对象的集合。
         /// </summary>
-        public Dictionary<string, CachData<T>> SQLDct
+        private Dictionary<string, CachData<T>> SQLDct
         {
             get
             {

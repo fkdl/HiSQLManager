@@ -56,14 +56,14 @@ namespace HiCSSQL
         /// <returns></returns>
         public static SqlInfo GetSqlInfo(string key, OnGetObjectHandler handler = null)
         {
-            CachData<SQLData> data = null;
-            if (!mng.SQLDct.TryGetValue(key, out data))
+            SQLData data = mng.GetValue(key);
+            if (data == null)
             {
                 return null;
             }
 
-            SqlInfo info = new SqlInfo(data.Data.SQL);
-            if (data.Data.paramDict.Count < 1)
+            SqlInfo info = new SqlInfo(data.SQL);
+            if (data.paramDict.Count < 1)
             {
                 return info;
             }
@@ -73,9 +73,9 @@ namespace HiCSSQL
                 throw new Exception(string.Format("sql where id({0}) need paramers,but not set OnGetObjectHandler object", key));
             }
 
-            info.Parameters = new DbParameter[data.Data.paramDict.Count];
+            info.Parameters = new DbParameter[data.paramDict.Count];
             int index = 0;
-            foreach (var it in data.Data.paramDict)
+            foreach (var it in data.paramDict)
             {
                 object val = null;
                 if (!handler(it.Value.ParamerText, ref val))
@@ -87,7 +87,7 @@ namespace HiCSSQL
                 {
                     val = DBNull.Value;
                 }
-                info.Parameters[index] = CreateParamer(data.Data.SqlType, it.Value.ParamerName, val, it.Value.IsOutParamer);
+                info.Parameters[index] = CreateParamer(data.SqlType, it.Value.ParamerName, val, it.Value.IsOutParamer);
                 if (it.Value.IsOutParamer)
                 {
                     info.Parameters[index].Direction = ParameterDirection.InputOutput;
