@@ -46,13 +46,18 @@ namespace HiCSSQL
             ParamerCls paramerCls;
             foreach (XmlNode child in node.ChildNodes)
             {
-                if (child.Name.ToUpper() == "TEXT")
+                if (child.Name.ToUpper() == "TEXT") // sql语句
                 {
                     this.SQL = child.InnerText.Replace("\r\n", "").Replace("\t", " ").Replace("  ", " ").Trim();
                     continue;
                 }
+                if (child.Name.ToUpper() == "Count")    // 分页时计算记录总条数
+                {
+                    this.CountSQL = child.InnerText.Replace("\r\n", "").Replace("\t", " ").Replace("  ", " ").Trim();
+                    continue;
+                }
 
-                if (child.Name.ToUpper() == "PARAMERS")
+                if (child.Name.ToUpper() == "PARAMERS") // 参数
                 {
                     foreach (XmlNode childPar in child)
                     {
@@ -73,7 +78,15 @@ namespace HiCSSQL
         /// </summary>
         private string sqlType;
 
+        /// <summary>
+        /// SQL语句
+        /// </summary>
         public string SQL { private set; get; }
+
+        /// <summary>
+        /// 分页查询时,取得行总数的SQL语句
+        /// </summary>
+        public string CountSQL { set; get; }
 
         /// <summary>
         /// 数据库类型。

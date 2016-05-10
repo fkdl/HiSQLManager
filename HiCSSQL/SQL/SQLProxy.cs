@@ -68,6 +68,8 @@ namespace HiCSSQL
                 return info;
             }
 
+            info.CountSQL = data.CountSQL;
+
             if (handler == null)
             {
                 throw new Exception(string.Format("sql where id({0}) need paramers,but not set OnGetObjectHandler object", key));

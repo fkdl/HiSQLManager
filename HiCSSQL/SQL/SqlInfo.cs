@@ -62,7 +62,12 @@ namespace HiCSSQL
 		///  Response.Write(info.SQL);
 		/// </code>
 		/// </example>
-        public string SQL { get; set; }
+        public string SQL { set; get; }
+
+        /// <summary>
+        /// 分页查询时,取得行总数的SQL语句
+        /// </summary>
+        public string CountSQL { set; get; }
 
 		/// <summary>
 		/// SQL参数数组。
@@ -76,6 +81,6 @@ namespace HiCSSQL
 		///  IDataParameter[] parameters = info.
 		/// </code>
 		/// </example>
-        public DbParameter[] Parameters { get; set; }
+        public DbParameter[] Parameters { set; get; }
 	}
 }
