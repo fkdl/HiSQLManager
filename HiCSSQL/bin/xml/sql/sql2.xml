@@ -5359,5 +5359,24 @@
             </TEXT>
         </SQL>
 
+        <!--【INNODB_LOCKS】：查询-取得表中一条记录。-->
+        <SQL id="DATA.INNODBLOCKS.GET8PAGE" type="sqlserver">
+            <TEXT>
+            SELECT  lock_id,  lock_trx_id,  lock_mode,  lock_type,  lock_table,  lock_index,  lock_space,  lock_page,  lock_rec,  lock_data FROM  (
+			select 
+				row_number() over(order by Id) as rowNum, 
+				lock_id,  lock_trx_id,  lock_mode,  lock_type,  lock_table,  lock_index,  lock_space,  lock_page,  lock_rec,  lock_data from dbo.LineProcess 
+				from Innodblocks WHERE lock_data = @lock_data order by lock_id  order by lock_id
+			) sub
+where sub.rowNum between {0} and {1}            
+            </TEXT>
+            <Count>
+			Select Count(1) from Innodblocks WHERE lock_data = @lock_data order by lock_id  order by lock_id
+			</Count>
+
+            <Paramers>
+                <paramer name="@lock_data" value="lock_data" script="lock_data"/>
+            </Paramers>
+        </SQL>
     </MODULE>
 </SQL-List>

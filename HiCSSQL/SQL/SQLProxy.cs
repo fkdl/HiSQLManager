@@ -123,14 +123,18 @@ namespace HiCSSQL
             {
                 param = new OleDbParameter();
             }
-            OnCreateParamHandler handler = null;
-            if (handlers.TryGetValue(type, out handler))
+
+            if (param == null)
             {
-                param = handler();
-            }
-            else
-            {
-                throw new Exception(string.Format("database type({0}) not support", type));
+                OnCreateParamHandler handler = null;
+                if (handlers.TryGetValue(type, out handler))
+                {
+                    param = handler();
+                }
+                else
+                {
+                    throw new Exception(string.Format("database type({0}) not support", type));
+                }
             }
 
             param.ParameterName = key;
