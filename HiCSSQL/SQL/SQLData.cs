@@ -51,7 +51,7 @@ namespace HiCSSQL
                     this.SQL = child.InnerText.Replace("\r\n", "").Replace("\t", " ").Replace("  ", " ").Trim();
                     continue;
                 }
-                if (child.Name.ToUpper() == "Count")    // 分页时计算记录总条数
+                if (child.Name.ToUpper() == "COUNT")    // 分页时计算记录总条数
                 {
                     this.CountSQL = child.InnerText.Replace("\r\n", "").Replace("\t", " ").Replace("  ", " ").Trim();
                     continue;
