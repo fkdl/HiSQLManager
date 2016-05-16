@@ -27,6 +27,17 @@ namespace HiCSSQL
         {
             return mng.GetValue(key);
         }
+		
+        /// <summary>
+        /// 设置解析回调函数
+        /// </summary>
+        public ParseCallBack<T> ParseEvt
+		{
+			set
+			{
+				mng.ParseEvt = value;
+			}
+		}
 
         CachMng<T> mng = new CachMng<T>();
     }
