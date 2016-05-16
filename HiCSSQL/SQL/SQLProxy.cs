@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Data.OleDb;
-using System.Data.SqlClient;
-using System.Data.OracleClient;
-using MySql.Data.MySqlClient;
 
 namespace HiCSSQL
 {
