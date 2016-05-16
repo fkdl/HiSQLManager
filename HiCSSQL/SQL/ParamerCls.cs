@@ -3,11 +3,14 @@ using System.Xml;
 
 namespace HiCSSQL
 {
-    internal class ParamerCls
+    /// <summary>
+    /// SQL参数
+    /// </summary>
+    public class ParamerCls
     {
         public string ParamerName;
         public string ParamerText;
-        public bool IsOutParamer = false;
+        public string IsOutParamer;
 
         /// <summary>
         /// 构造函数。（读取配置文件）
@@ -19,9 +22,9 @@ namespace HiCSSQL
             this.ParamerName = ndAtt["name"].Value;
             this.ParamerText = ndAtt["value"].Value;
 
-            if (ndAtt["isOut"] != null && ndAtt["isOut"].Value.ToLower() == "true")
+            if (ndAtt["isOut"] != null)
             {
-                this.IsOutParamer = true;
+                this.IsOutParamer = ndAtt["isOut"].Value;
             }
         }
     }

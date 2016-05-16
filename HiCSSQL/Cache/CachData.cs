@@ -7,14 +7,13 @@ namespace HiCSSQL
     /// 缓存的XML信息
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    class CachData<T> where T : ICachItem, new()
+    class CachData<T> where T : class
     {
         /// <summary>
         /// 构造函数
         /// </summary>
         public CachData()
         {
-            Data = new T();
         }
 
         /// <summary>
@@ -31,24 +30,5 @@ namespace HiCSSQL
         /// 存储的对象
         /// </summary>
         public T Data { set; get; }
-
-        public bool Parse(XmlNode node)
-        {
-            // 如果是注释
-            if (XmlNodeType.Comment == node.NodeType)
-            {
-                return false;
-            }
-
-            XmlAttributeCollection ndAtt = node.Attributes;
-
-            this.ID = ndAtt["id"].Value;
-            Data = new T();
-            if (!Data.Parse(node))
-            {
-                return false;
-            }
-            return true;
-        }
     }
 }

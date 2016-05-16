@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HiCSSQL
 {
-    public sealed class CachProxy<T> where T: class, ICachItem, new()
+    public sealed class CachProxy<T> where T: class
     {
         /// <summary>
         /// 加载存储SQL XML文件的文件夹。

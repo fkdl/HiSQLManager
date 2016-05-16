@@ -2,10 +2,14 @@
 
 namespace HiCSSQL
 {
-    internal class HiLog
+    /// <summary>
+    /// 日志
+    /// </summary>
+    public class HiLog
     {
-        private static SQLProxy.OnLOG onlog = null;
-        public static void SetLogFun(SQLProxy.OnLOG logfun)
+        public delegate void OnLOG(string script);
+        private static OnLOG onlog = null;
+        public static void SetLogFun(OnLOG logfun)
         {
             onlog = logfun;
         }

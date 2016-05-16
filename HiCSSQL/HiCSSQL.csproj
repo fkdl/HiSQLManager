@@ -46,10 +46,8 @@
   <ItemGroup>
     <Compile Include="Cache\CachProxy.cs" />
     <Compile Include="Cache\CachData.cs" />
-    <Compile Include="Cache\ICachItem.cs" />
     <Compile Include="SQL\ParamerCls.cs" />
     <Compile Include="SQL\SQLData.cs" />
-    <Compile Include="SQL\SqlInfo.cs" />
     <Compile Include="Cache\CachMng.cs" />
     <Compile Include="SQL\SQLProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

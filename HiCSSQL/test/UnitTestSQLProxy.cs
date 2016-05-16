@@ -17,7 +17,7 @@ namespace HiCSSQLTest
             string path = AppDomain.CurrentDomain.BaseDirectory;
             DirectoryInfo topDir = System.IO.Directory.GetParent(path);
             folder = topDir.FullName + "\\xml";
-            SQLProxy.SetLog(script =>
+            HiLog.SetLogFun(script =>
             {
                 Trace.WriteLine(script);
             });
@@ -28,14 +28,10 @@ namespace HiCSSQLTest
         {
             string path = folder + "\\sql";
             SQLProxy.LoadXMLs(path);
-            Assert.IsTrue(SQLProxy.GetSqlInfo("DATA.COLLATIONS.GETDATASOURCE") != null);
-            SqlInfo info = SQLProxy.GetSqlInfo("DATA.INNODBLOCKS.GET8PAGE", (string propertyName, ref object objVal) =>
-            {
-                objVal = 3;
-                return true;
-            });
+            Assert.IsTrue(SQLProxy.GetValue("DATA.COLLATIONS.GETDATASOURCE") != null);
+            SQLData info = SQLProxy.GetValue("DATA.INNODBLOCKS.GET8PAGE");
             Assert.IsTrue(info != null);
-            Assert.IsTrue(string.IsNullOrWhiteSpace(info.CountSQL));
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(info.CountSQL));
         }
         [TestMethod]
         public void LoadXMLs_NoXMLFile()

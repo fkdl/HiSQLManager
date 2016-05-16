@@ -5,10 +5,10 @@ using System.Xml;
 namespace HiCSSQL
 {
     /// <summary>
-        /// SQL配置文件中，某个SQL ID对应的类。本类中存储着某个SQL ID对应对象的结构。
-        /// 包括SQL语句，数据库类型，参数信息等。
-        /// </summary>
-    internal class SQLData: ICachItem
+    /// SQL配置文件中，某个SQL ID对应的类。本类中存储着某个SQL ID对应对象的结构。
+    /// 包括SQL语句，数据库类型，参数信息等。
+    /// </summary>
+    public class SQLData
     {
         private const string SQL_SERVER = "sqlserver";
         private const string ORACLE = "oracle";
@@ -24,36 +24,32 @@ namespace HiCSSQL
         {
         }
 
-        public SQLData(XmlNode node)
-        {
-            Parse(node);
-        }
 
-        public bool Parse(XmlNode node)
+        public static SQLData Parse(XmlNode node)
         {
             // 如果是注释
             if (XmlNodeType.Comment == node.NodeType)
             {
-                return false;
+                return null;
             }
+            SQLData data = new SQLData();
 
             XmlAttributeCollection ndAtt = node.Attributes;
             if (ndAtt["type"] != null && ndAtt["type"].Value != null)
             {
-                this.sqlType = ndAtt["type"].Value.ToLower();
+                data.SqlType = ndAtt["type"].Value.ToLower();
             }
 
-            ParamerCls paramerCls;
             foreach (XmlNode child in node.ChildNodes)
             {
                 if (child.Name.ToUpper() == "TEXT") // sql语句
                 {
-                    this.SQL = child.InnerText.Replace("\r\n", "").Replace("\t", " ").Replace("  ", " ").Trim();
+                    data.SQL = child.InnerText.Replace("\r\n", "").Replace("\t", " ").Replace("  ", " ").Trim();
                     continue;
                 }
                 if (child.Name.ToUpper() == "COUNT")    // 分页时计算记录总条数
                 {
-                    this.CountSQL = child.InnerText.Replace("\r\n", "").Replace("\t", " ").Replace("  ", " ").Trim();
+                    data.CountSQL = child.InnerText.Replace("\r\n", "").Replace("\t", " ").Replace("  ", " ").Trim();
                     continue;
                 }
 
@@ -61,16 +57,16 @@ namespace HiCSSQL
                 {
                     foreach (XmlNode childPar in child)
                     {
-                        paramerCls = new ParamerCls(childPar);
+                        ParamerCls paramerCls = new ParamerCls(childPar);
                         if (paramerCls.ParamerName != null)
                         {
-                            paramDict.Add(paramerCls.ParamerText, paramerCls);
+                            data.paramDict.Add(paramerCls.ParamerText, paramerCls);
                         }
                     }
                 }
             }
 
-            return true;
+            return data;
         }
 
         /// <summary>
@@ -81,7 +77,7 @@ namespace HiCSSQL
         /// <summary>
         /// SQL语句
         /// </summary>
-        public string SQL { private set; get; }
+        public string SQL { set; get; }
 
         /// <summary>
         /// 分页查询时,取得行总数的SQL语句
@@ -93,6 +89,10 @@ namespace HiCSSQL
         /// </summary>
         public string SqlType
         {
+            set
+            {
+                sqlType = value;
+            }
             get
             {
                 if (sqlType == null)
