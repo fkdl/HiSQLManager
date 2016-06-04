@@ -7,9 +7,8 @@ namespace HiCSSQL
     /// </summary>
     public class HiLog
     {
-        public delegate void OnLOG(string script);
-        private static OnLOG onlog = null;
-        public static void SetLogFun(OnLOG logfun)
+        private static Action<string> onlog = null;
+        public static void SetLogFun(Action<string> logfun)
         {
             onlog = logfun;
         }
