@@ -24,6 +24,10 @@ namespace HiCSSQL
         {
             if (onlog != null)
             {
+                if (lst == null)
+                {
+                    onlog(format);
+                }
                 onlog(string.Format(format, lst));
             }
         }
@@ -31,6 +35,10 @@ namespace HiCSSQL
         {
             if (onlog != null)
             {
+                if (lst == null)
+                {
+                    onlog(format);
+                }
                 onlog(string.Format(format, lst));
             }
         }
@@ -38,6 +46,10 @@ namespace HiCSSQL
         {
             if (onlog != null)
             {
+                if (lst == null)
+                {
+                    onlog(format);
+                }
                 onlog(string.Format(format, lst));
             }
         }
